@@ -9,7 +9,13 @@
       "Bash(gem build:*)",
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git rm:*)",
+      "Bash(gem install:*)",
+      "Bash(gemcompare minitest:*)",
+      "Bash(gemcompare --help:*)",
+      "Bash(gemcompare cache info:*)",
+      "Bash(git mv:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require "gem_compare"
+require "diff_gem"
 
 require "pry"
 Pry.start

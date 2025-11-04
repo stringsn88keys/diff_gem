@@ -1,6 +1,6 @@
 require 'fileutils'
 
-module GemCompare
+module DiffGem
   class Comparer
     attr_reader :gem_name, :old_version, :new_version, :cache_dir
 
@@ -44,7 +44,7 @@ module GemCompare
     end
 
     def default_cache_dir
-      ENV['GEM_COMPARE_CACHE_DIR'] || File.expand_path('~/.gem_compare_cache')
+      ENV['DIFF_GEM_CACHE_DIR'] || File.expand_path('~/.diff_gem_cache')
     end
   end
 end

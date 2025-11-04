@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    gem_compare (0.1.0)
+    diff_gem (0.1.0)
       thor (~> 1.0)
 
 GEM
@@ -33,7 +33,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  gem_compare!
+  diff_gem!
   pry (~> 0.14)
   rspec (~> 3.12)
 

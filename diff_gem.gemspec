@@ -1,12 +1,12 @@
 Gem::Specification.new do |spec|
-  spec.name          = "gem_compare"
+  spec.name          = "diff_gem"
   spec.version       = "0.1.0"
   spec.authors       = ["Developer"]
   spec.email         = ["developer@example.com"]
 
   spec.summary       = "Compare source code between two versions of a Ruby gem"
   spec.description   = "A tool to download and compare the source trees of two different versions of a Ruby gem, displaying differences in diff format"
-  spec.homepage      = "https://github.com/example/gem_compare"
+  spec.homepage      = "https://github.com/example/diff_gem"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
 

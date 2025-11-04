@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/gem_compare'
+require_relative '../lib/diff_gem'
 
 # If first argument is not a known command, assume it's a gem name and prepend 'compare'
-KNOWN_COMMANDS = %w[compare version cache help]
+KNOWN_COMMANDS = %w[compare metadata version cache help]
 if ARGV.length >= 3 && !KNOWN_COMMANDS.include?(ARGV[0])
   ARGV.unshift('compare')
 end
 
-GemCompare::CLI.start(ARGV)
+DiffGem::CLI.start(ARGV)

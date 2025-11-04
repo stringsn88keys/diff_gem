@@ -1,11 +1,11 @@
 require 'thor'
 require 'fileutils'
 
-module GemCompare
+module DiffGem
   class CacheCommands < Thor
     desc "clear", "Clear the cache directory"
     def clear
-      cache_dir = ENV['GEM_COMPARE_CACHE_DIR'] || File.expand_path('~/.gem_compare_cache')
+      cache_dir = ENV['DIFF_GEM_CACHE_DIR'] || File.expand_path('~/.diff_gem_cache')
 
       if File.exist?(cache_dir)
         FileUtils.rm_rf(cache_dir)
@@ -17,7 +17,7 @@ module GemCompare
 
     desc "info", "Show cache directory information"
     def info
-      cache_dir = ENV['GEM_COMPARE_CACHE_DIR'] || File.expand_path('~/.gem_compare_cache')
+      cache_dir = ENV['DIFF_GEM_CACHE_DIR'] || File.expand_path('~/.diff_gem_cache')
 
       puts "Cache directory: #{cache_dir}"
 
@@ -58,16 +58,37 @@ module GemCompare
       the differences in unified diff format.
 
       Example:
-      $ gemcompare rails 7.0.0 7.1.0
+      $ diff_gem rails 7.0.0 7.1.0
 
-      $ gemcompare compare rails 7.0.0 7.1.0
+      $ diff_gem compare rails 7.0.0 7.1.0
+
+      With metadata comparison:
+      $ diff_gem compare --metadata rails 7.0.0 7.1.0
     LONGDESC
     option :cache_dir,
            type: :string,
            desc: "Custom cache directory for downloaded gems"
+    option :metadata,
+           type: :boolean,
+           default: false,
+           desc: "Also compare gem metadata before showing source diff"
 
     def compare(gem_name, old_version, new_version)
       begin
+        # Show metadata comparison if requested
+        if options[:metadata]
+          metadata_comparer = MetadataComparer.new(
+            gem_name: gem_name,
+            old_version: old_version,
+            new_version: new_version
+          )
+          metadata_comparer.compare
+          puts "\n" + "=" * 80
+          puts "Source Code Comparison"
+          puts "=" * 80 + "\n\n"
+        end
+
+        # Show source comparison
         comparer = Comparer.new(
           gem_name: gem_name,
           old_version: old_version,
@@ -77,7 +98,35 @@ module GemCompare
 
         comparer.compare
 
-      rescue GemCompare::Error => e
+      rescue DiffGem::Error => e
+        puts "Error: #{e.message}"
+        exit 1
+      rescue => e
+        puts "Unexpected error: #{e.message}"
+        puts e.backtrace
+        exit 1
+      end
+    end
+
+    desc "metadata GEM_NAME OLD_VERSION NEW_VERSION", "Compare metadata of two gem versions"
+    long_desc <<-LONGDESC
+      Compare the metadata (dependencies, version info, etc.) of two different
+      versions of a Ruby gem without comparing source code.
+
+      Example:
+      $ diff_gem metadata rails 7.0.0 7.1.0
+    LONGDESC
+
+    def metadata(gem_name, old_version, new_version)
+      begin
+        metadata_comparer = MetadataComparer.new(
+          gem_name: gem_name,
+          old_version: old_version,
+          new_version: new_version
+        )
+        metadata_comparer.compare
+
+      rescue DiffGem::Error => e
         puts "Error: #{e.message}"
         exit 1
       rescue => e
@@ -89,7 +138,7 @@ module GemCompare
 
     desc "version", "Show version"
     def version
-      puts GemCompare::VERSION
+      puts DiffGem::VERSION
     end
 
     desc "cache", "Manage cache directory"

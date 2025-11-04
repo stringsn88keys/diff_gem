@@ -5,7 +5,7 @@ require 'stringio'
 require 'open-uri'
 require 'net/http'
 
-module GemCompare
+module DiffGem
   class GemExtractor
     attr_reader :cache_dir
 
