@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "diff_gem"
-  spec.version       = "0.1.1"
+  spec.version       = "0.2.0"
   spec.authors       = ["Thomas Powell"]
   spec.email         = ["twilliampowell@gmail.com"]
 
@@ -11,13 +11,25 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.6.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = spec.homepage
   spec.metadata["changelog_uri"] = "#{spec.homepage}/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    `git ls-files -z 2>/dev/null`.split("\x0").reject do |f|
-      (f == __FILE__) || f.match(%r{\A(?:(?:bin|test|spec|features)/|\.(?:git|travis|circleci)|appveyor)})
+    git_files = begin
+      IO.popen(['git', 'ls-files', '-z'], err: File::NULL, &:read)
+    rescue Errno::ENOENT
+      nil
+    end
+
+    candidates = if git_files && !git_files.empty?
+                   git_files.split("\x0")
+                 else
+                   Dir.glob('**/*', File::FNM_DOTMATCH).reject { |path| File.directory?(path) }
+                 end
+
+    candidates.reject do |f|
+      File.expand_path(f) == File.expand_path(__FILE__) ||
+        f.match(%r{\A(?:(?:bin|test|spec|features)/|\.(?:git|travis|circleci)|appveyor)})
     end
   end
   spec.bindir        = "exe"
