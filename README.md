@@ -1,4 +1,4 @@
-# DiffGem
+# Diff Gem
 
 Compare the source code and metadata between two versions of a Ruby gem.
 
